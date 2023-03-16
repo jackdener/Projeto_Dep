@@ -1,12 +1,24 @@
 package com.example.projeto;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,7 +26,7 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class FragmentoSugestoes extends Fragment {
-
+    RecyclerView rv;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -59,6 +71,40 @@ public class FragmentoSugestoes extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_fragmento_sugestoes, container, false);
+        View v = inflater.inflate(R.layout.fragment_fragmento_sugestoes, container, false);
+        rv = v.findViewById(R.id.rv);
+
+        carrega();
+        return v;
+    }
+
+    public void carrega() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("clientes");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<Cliente> lista = new ArrayList<>();
+                for (DataSnapshot dn : snapshot.getChildren()) {
+                    Cliente c = dn.getValue(Cliente.class);
+                    lista.add(c);
+                }
+                RecyclerAdapter adapter = new RecyclerAdapter(getContext(), lista, c -> {
+                    AlertDialog.Builder alerta = new AlertDialog.Builder(getContext());
+                    alerta.setTitle(c.getPlaca());
+                    String mensagem = "Nome: " + c.getNome() + "\nTelefone: " + c.getTelefone() + "\nAtendimento: " + c.getAtendimento() + "\nInfraestrutura: " +
+                            c.getInfraestrutura() + "\nQualidade do serviço: "+c.getQualidadeServico()+"\nNível de conhecimento: "+c.conhecimento;
+                    alerta.setMessage(mensagem);
+                    alerta.show();
+                });
+                rv.setAdapter(adapter);
+                rv.setHasFixedSize(true);
+                rv.setLayoutManager(new LinearLayoutManager(getContext()));
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 }
