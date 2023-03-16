@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -23,7 +25,9 @@ import com.google.firebase.database.ValueEventListener;
  */
 public class FragmentoAvaliacao extends Fragment {
     TextView contador, atendimento, infra, qualidade, conhecimento, geral;
-    int quantidade = 0;
+    EditText mes, ano;
+    ImageView logo;
+    DatabaseReference reference;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -75,11 +79,19 @@ public class FragmentoAvaliacao extends Fragment {
         qualidade = v.findViewById(R.id.mdQualidade);
         conhecimento = v.findViewById(R.id.mdConhecimento);
         geral = v.findViewById(R.id.mediaGeral);
-        fazMedias();
+        mes = v.findViewById(R.id.mes);
+        ano = v.findViewById(R.id.ano);
+        logo = v.findViewById(R.id.imageFiltro);
+        logo.setOnClickListener(view -> {
+            filtra();
+        });
+        reference = FirebaseDatabase.getInstance().getReference().child("clientes");
+        FragmentoSugestoes.reference = reference;
         return v;
     }
-    public void fazMedias() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("clientes");
+    public void fazMedias(String mes, String ano) {
+        reference = FirebaseDatabase.getInstance().getReference().child("clientes").child(ano).child(mes);
+        FragmentoSugestoes.reference = reference;
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -87,7 +99,8 @@ public class FragmentoAvaliacao extends Fragment {
                 double mediaInfra = 0;
                 double mediaQualidade = 0;
                 double mediaConhecimento = 0;
-                double mediaGeral;
+                double mediaGeral = 0;
+                int quantidade = 0;
                 for (DataSnapshot dn : snapshot.getChildren()) {
                     Cliente c = dn.getValue(Cliente.class);
                     quantidade++;
@@ -114,5 +127,10 @@ public class FragmentoAvaliacao extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+    }
+    public void filtra(){
+        String m = mes.getText().toString();
+        String a = ano.getText().toString();
+        fazMedias(m,a);
     }
 }

@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -46,7 +47,9 @@ public class MainActivity extends AppCompatActivity {
             limpar();
         }
         else if (!p.equals("")) {
-            Cliente c = new Cliente(p,n,t);
+            int m = LocalDateTime.now().getMonthValue();
+            int a = LocalDateTime.now().getYear();
+            Cliente c = new Cliente(p,n,t,m,a);
             Intent i = new Intent(this, TelaPesquisa.class);
             startActivity(i);
             TelaPesquisa.cliente = c;

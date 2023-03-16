@@ -12,7 +12,7 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/imageView5"
+            android:id="@+id/imageCarrega"
             android:layout_width="180dp"
             android:layout_height="140dp"
             android:layout_marginStart="50dp"
@@ -37,6 +37,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView5" />
+            app:layout_constraintTop_toBottomOf="@+id/imageCarrega" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

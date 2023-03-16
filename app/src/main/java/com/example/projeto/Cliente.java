@@ -5,12 +5,27 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class Cliente {
     String nome, telefone, sugestoes, placa;
-    int atendimento, infraestrutura, qualidadeServico, conhecimento;
+    int atendimento, infraestrutura, qualidadeServico, conhecimento, mes, ano;
 
-    public Cliente(String placa, String nome, String telefone) {
+    public Cliente(String placa, String nome, String telefone, int mes, int ano) {
         this.placa = placa;
         this.nome = nome;
         this.telefone = telefone;
+        this.mes = mes;
+        this.ano = ano;
+    }
+
+    public Cliente(String nome, String telefone, String sugestoes, String placa, int atendimento, int infraestrutura, int qualidadeServico, int conhecimento, int mes, int ano) {
+        this.nome = nome;
+        this.telefone = telefone;
+        this.sugestoes = sugestoes;
+        this.placa = placa;
+        this.atendimento = atendimento;
+        this.infraestrutura = infraestrutura;
+        this.qualidadeServico = qualidadeServico;
+        this.conhecimento = conhecimento;
+        this.mes = mes;
+        this.ano = ano;
     }
 
     public Cliente(String nome, String telefone, String sugestoes, String placa, int atendimento, int infraestrutura, int qualidadeServico, int conhecimento) {
@@ -22,6 +37,22 @@ public class Cliente {
         this.infraestrutura = infraestrutura;
         this.qualidadeServico = qualidadeServico;
         this.conhecimento = conhecimento;
+    }
+
+    public int getMes() {
+        return mes;
+    }
+
+    public void setMes(int mes) {
+        this.mes = mes;
+    }
+
+    public int getAno() {
+        return ano;
+    }
+
+    public void setAno(int ano) {
+        this.ano = ano;
     }
 
     public String getPlaca() {
@@ -92,7 +123,7 @@ public class Cliente {
     }
     public void salvar() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        reference.child("clientes").child(placa).setValue(this);
+        reference.child("clientes").child(ano+"").child(mes+"").child(placa).setValue(this);
     }
 
 }
